@@ -20,7 +20,8 @@ class Solution:
         return abs(a - 15)
 
     def human_readable(self):
-        return "(x={}, y={}, z={}) ".format(self.x, self.y, self.z)
+        return "(x={}, y={}, z={}, error={}) ".format(
+                self.x, self.y, self.z, self.test_solution())
 
 
 def generate_random_between(min, max):
