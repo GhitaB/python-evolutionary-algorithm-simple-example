@@ -8,6 +8,21 @@ ACCEPTED_ERROR = 0
 POPULATION_NUMBER = 50
 
 
+class Solution:
+    def __init__(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
+
+    def test_solution(self):
+        a = 3 * self.x + 2 * self.y + self.z
+
+        return abs(a - 15)
+
+    def human_readable(self):
+        return "(x={}, y={}, z={}) ".format(self.x, self.y, self.z)
+
+
 def generate_random_between(min, max):
     """ Return a random int between min and max """
     return random.randint(min, max)
@@ -19,23 +34,16 @@ def generate_random_solution():
     y = generate_random_between(MIN, MAX)
     z = generate_random_between(MIN, MAX)
 
-    return (x, y, z)
+    return Solution(x, y, z)
 
 
 def generate_random_mutant_solution(parent):
     """ Return a random mutant solution based on given (x, y, z) """
-    x = parent[0] + generate_random_between(MUTANT_MIN, MUTANT_MAX)
-    y = parent[0] + generate_random_between(MUTANT_MIN, MUTANT_MAX)
-    z = parent[0] + generate_random_between(MUTANT_MIN, MUTANT_MAX)
+    x = parent.x + generate_random_between(MUTANT_MIN, MUTANT_MAX)
+    y = parent.y + generate_random_between(MUTANT_MIN, MUTANT_MAX)
+    z = parent.x + generate_random_between(MUTANT_MIN, MUTANT_MAX)
 
-    return (x, y, z)
-
-
-def test_solution(x, y, z):
-    """ Test how good a solution is. 0 means perfect, 1 = almost there. """
-    a = 3 * x + 2 * y + z
-
-    return abs(a-15)
+    return Solution(x, y, z)
 
 
 def generate_population_of_solutions():
@@ -43,9 +51,9 @@ def generate_population_of_solutions():
     solutions = []
 
     for i in range(1, POPULATION_NUMBER):
-        x, y, z = generate_random_solution()
-        res = test_solution(x, y, z)
-        solutions.append(((x, y, z), res))
+        solution = generate_random_solution()
+        res = solution.test_solution()
+        solutions.append((solution, res))
 
     return sorted(solutions, key = lambda j: j[1])
 
@@ -55,9 +63,9 @@ def generate_population_of_mutant_solutions(parent):
     solutions = []
 
     for i in range(1, POPULATION_NUMBER):
-        x, y, z = generate_random_mutant_solution(parent)
-        res = test_solution(x, y, z)
-        solutions.append(((x, y, z), res))
+        solution = generate_random_mutant_solution(parent)
+        res = solution.test_solution()
+        solutions.append((solution, res))
 
     return sorted(solutions, key = lambda j: j[1])
 
@@ -67,6 +75,16 @@ def select_the_best_mutant(solutions):
         generation of mutant solutions.
     """
     return solutions[0][0]
+
+
+def list_solutions(solutions):
+    """ Human readable format
+    """
+    res = ""
+    for s in solutions:
+        res += s[0].human_readable()
+
+    print(res)
 
 
 def main():
@@ -81,16 +99,16 @@ def main():
     print("Cele mai bune vor fi primele.")
 
     solutions = generate_population_of_solutions()
-    print(solutions)
+    list_solutions(solutions)
 
     parent = solutions[0][0]
     print("Cea mai buna solutie gasita este: x={}, y={}, z={}".format(
-        parent[0], parent[1], parent[2]
+        parent.x, parent.y, parent.z
         ))
 
     print("3*{} + 2*{} + {} = {}, eroarea fiind {}".format(
-        parent[0], parent[1], parent[2],
-        3 * parent[0] + 2 * parent[1] + parent[2],
+        parent.x, parent.y, parent.z,
+        3 * parent.x + 2 * parent.y + parent.z,
         solutions[0][1]))
 
     print("Vom lansa populatii de mutanti, selectand mereu pe cel mai bun.")
@@ -101,16 +119,16 @@ def main():
 
         print("---- GENERATIA DE MUTANTI: {}".format(mutant_generations))
         solutions = generate_population_of_mutant_solutions(parent)
-        print(solutions)
+        list_solutions(solutions)
 
         parent = select_the_best_mutant(solutions)
         print("Cea mai buna solutie gasita este: x={}, y={}, z={}".format(
-            parent[0], parent[1], parent[2]
+            parent.x, parent.y, parent.z
             ))
 
         print("3*{} + 2*{} + {} = {}, eroarea fiind {}".format(
-            parent[0], parent[1], parent[2],
-            3 * parent[0] + 2 * parent[1] + parent[2],
+            parent.x, parent.y, parent.z,
+            3 * parent.x + 2 * parent.y + parent.z,
             solutions[0][1]))
 
         if solutions[0][1] <= ACCEPTED_ERROR:
