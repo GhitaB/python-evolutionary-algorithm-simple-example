@@ -25,8 +25,8 @@ def generate_random_solution():
 def generate_random_mutant_solution(parent):
     """ Return a random mutant solution based on given (x, y, z) """
     x = parent[0] + generate_random_between(MUTANT_MIN, MUTANT_MAX)
-    y = parent[0] + generate_random_between(MUTANT_MIN, MUTANT_MAX)
-    z = parent[0] + generate_random_between(MUTANT_MIN, MUTANT_MAX)
+    y = parent[1] + generate_random_between(MUTANT_MIN, MUTANT_MAX)
+    z = parent[2] + generate_random_between(MUTANT_MIN, MUTANT_MAX)
 
     return (x, y, z)
 
